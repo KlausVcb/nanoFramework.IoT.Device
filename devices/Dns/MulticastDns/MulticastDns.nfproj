@@ -30,9 +30,6 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="Enum\MulticastDnsStatus.cs" />
-    <Compile Include="EventArgs\MulticastDnsStatusEventArgs.cs" />
-    <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
     <Compile Include="MulticastDnsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

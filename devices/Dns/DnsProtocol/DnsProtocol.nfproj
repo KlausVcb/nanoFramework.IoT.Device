@@ -32,6 +32,9 @@
     <Compile Include="Entities\TxtRecord.cs" />
     <Compile Include="Enum\DnsHeaderFlags.cs" />
     <Compile Include="Enum\DnsResourceType.cs" />
+    <Compile Include="Enum\DnsStatus.cs" />
+    <Compile Include="EventArgs\DnsStatusEventArgs.cs" />
+    <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
     <Compile Include="Package\ArrayListUtility.cs" />
     <Compile Include="Package\PacketBuilder.cs" />
     <Compile Include="Package\PacketParser.cs" />

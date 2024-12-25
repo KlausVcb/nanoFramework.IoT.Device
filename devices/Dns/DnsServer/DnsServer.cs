@@ -3,37 +3,34 @@
 
 using System;
 using System.Net;
-using System.Threading;
-using System.Net.Sockets;
 using Iot.Device.DnsProtocol.Entities;
+using System.Net.Sockets;
+using System.Threading;
 using Iot.Device.DnsProtocol.EventArgs;
 using Iot.Device.DnsProtocol.Enum;
 
 namespace Iot.Device.MulticastDns
 {
     /// <summary>
-    /// Multicast DNS (mDNS) is a computer networking protocol that resolves hostnames to IP addresses within local networks.
+    /// DnsServer monitors for incoming DNS questions and answers accordingly.
     /// </summary>
-    public sealed class MulticastDnsService : IDisposable
+    public sealed class DnsServer : IDisposable
     {
-        private const string MulticastDnsAddress = "224.0.0.251";
-        private const int MulticastDnsPort = 5353;
+        private const int DefaultDnsPort = 53;
 
         private bool _listening = false;
-        private IPAddress _multicastAddress;
-        private UdpClient _client;
+        private readonly UdpClient _client;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MulticastDnsService" /> class.
+        /// Initializes a new instance of the <see cref="DnsServer" /> class.
         /// </summary>
-        public MulticastDnsService()
+        public DnsServer()
         {
-            _multicastAddress = IPAddress.Parse(MulticastDnsAddress);
-            _client = new(new IPEndPoint(IPAddress.Any, MulticastDnsPort));
+            _client = new(new IPEndPoint(IPAddress.Any, DefaultDnsPort));
         }
 
         /// <summary>
-        /// Start the worker thread that will listen for Multicast packets.
+        /// Start the worker thread that will listen for DNS packets.
         /// </summary>
         public void Start()
         {
@@ -45,12 +42,12 @@ namespace Iot.Device.MulticastDns
         }
 
         /// <summary>
-        /// Stop the worker thread that is listening for Multicast packets.
+        /// Stop the worker thread that is listening for DNS packets.
         /// </summary>
         public void Stop() => _listening = false;
 
         /// <summary>
-        /// The delegate that will be invoked when a Multicast DNS message is received.
+        /// The delegate that will be invoked when a DNS message is received.
         /// </summary>
         /// <param name="sender">The MulticastDNSService instance that received the message.</param>
         /// <param name="e">The MessageReceivedEventArgs containing the received message.</param>
@@ -73,19 +70,10 @@ namespace Iot.Device.MulticastDns
         /// </summary>
         public event MulticastDnsStatusChangedEventHandler StatusChanged;
 
-        /// <summary>
-        /// Sends a Multicast DNS message.
-        /// </summary>
-        /// <param name="message">The message to be sent.</param>
-        public void Send(Message message) => _client.Send(message.GetBytes(), new(_multicastAddress, MulticastDnsPort));
-
         private void Run()
         {
             try
             {
-                _client.JoinMulticastGroup(_multicastAddress);
-
-                IPEndPoint multicastEndpoint = new(_multicastAddress, MulticastDnsPort);
                 IPEndPoint remoteEndpoint = new(IPAddress.Any, 0);
 
                 byte[] buffer = new byte[2048];
@@ -110,14 +98,12 @@ namespace Iot.Device.MulticastDns
 
                         if (eventArgs.Response != null)
                         {
-                            _client.Send(eventArgs.Response.GetBytes(), multicastEndpoint);
+                            _client.Send(eventArgs.Response.GetBytes(), remoteEndpoint);
                         }
                     }
                 }
-
-                _client.DropMulticastGroup(_multicastAddress);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 StatusChanged?.Invoke(this, new DnsStatusEventArgs(DnsStatus.Error, ex.ToString()));
             }

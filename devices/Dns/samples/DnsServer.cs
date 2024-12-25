@@ -2,68 +2,40 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using Iot.Device.DnsProtocol.Entities;
-using Iot.Device.DnsProtocol.Enum;
 using Iot.Device.DnsProtocol.EventArgs;
 using Iot.Device.MulticastDns;
-using nanoFramework.Networking;
 using nanoFramework.WebServer;
 
 namespace MulticastDns.Samples
 {
-    internal class Program
+    internal class DnsServerSample
     {
-        // Replace with your wifi ssid/pwd
-        const string Ssid = "compline";
-        const string Pwd = "Actina76langer";
-
-        // The following string contains the domain we will query through a browser.
-        const string DeviceDomain = "nanodevice.local";
-
-        private static string _ipAddress;
-
-        public static void Main()
+        public static void RunSample()
         {
-            // Connect to the WiFi.
-            bool result = WifiNetworkHelper.ConnectDhcp(Ssid, Pwd);
-            Debug.Assert(result, "Looks like connecting to the WiFi didn't quite work out...");
-
-            DnsServerSample.RunSample();
-
             // Instantiate the MulticastDnsService
-            using MulticastDnsService multicastDnsService = new();
+            using DnsServer dnsServer = new();
 
             // After resolving the domain, the IP address of the device is sent back to the browser
             // We'll serve some text back to show this is actually working
             using WebServer webServer = new(80, HttpProtocol.Http);
 
             // Register the event handler that will receive mDNS messages
-            multicastDnsService.MessageReceived += MulticastDnsService_MessageReceived;
+            dnsServer.MessageReceived += MulticastDnsService_MessageReceived;
 
             // Register the event handler that will treat the HTTP requests
             webServer.CommandReceived += WebServer_CommandReceived;
 
-            // Find the IP address of the device
-            _ipAddress = FindMyIp();
-
             // Start the MulticastDnsService
-            multicastDnsService.Start();
+            dnsServer.Start();
             // Start the webserver
             webServer.Start();
 
             Debug.WriteLine("All ready! Feel free to surf to http://nanodevice.local in your favorite browser...");
 
             Thread.Sleep(Timeout.Infinite);
-        }
-
-        private static string FindMyIp()
-        {
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            return interfaces[0].IPv4Address;
         }
 
         private static void WebServer_CommandReceived(object obj, WebServerEventArgs e)
@@ -77,12 +49,7 @@ namespace MulticastDns.Samples
             if (e.Message != null)
                 foreach (Question question in e.Message.GetQuestions())
                 {
-                    if (question.QueryType == DnsResourceType.A && question.Domain == DeviceDomain)
-                    {
-                        var response = new Response();
-                        response.AddAnswer(new ARecord(question.Domain, IPAddress.Parse(_ipAddress)));
-                        e.Response = response;
-                    }
+                    Debug.WriteLine($"Question: {question.Domain} - {question.QueryType}");
                 }
         }
     }
