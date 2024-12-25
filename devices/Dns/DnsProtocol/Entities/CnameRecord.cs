@@ -1,10 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Iot.Device.MulticastDns.Enum;
-using Iot.Device.MulticastDns.Package;
+using Iot.Device.DnsProtocol.Enum;
+using Iot.Device.DnsProtocol.Package;
 
-namespace Iot.Device.MulticastDns.Entities
+namespace Iot.Device.DnsProtocol.Entities
 {
     /// <summary>
     /// Represents a CNAME Record Resource (DNS Resource Type 5).

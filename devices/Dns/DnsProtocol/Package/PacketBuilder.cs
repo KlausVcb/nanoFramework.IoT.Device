@@ -5,7 +5,7 @@ using System.Buffers.Helpers.BitConverter;
 using System.Collections;
 using System.Text;
 
-namespace Iot.Device.MulticastDns.Package
+namespace Iot.Device.DnsProtocol.Package
 {
     internal class PacketBuilder
     {

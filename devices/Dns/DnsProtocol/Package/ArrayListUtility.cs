@@ -4,7 +4,7 @@
 using System;
 using System.Collections;
 
-namespace Iot.Device.MulticastDns.Package
+namespace Iot.Device.DnsProtocol.Package
 {
     internal static class ArrayListUtility
     {

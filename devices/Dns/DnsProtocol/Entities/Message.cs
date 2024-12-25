@@ -1,11 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Iot.Device.MulticastDns.Enum;
-using Iot.Device.MulticastDns.Package;
+using Iot.Device.DnsProtocol.Enum;
+using Iot.Device.DnsProtocol.Package;
 using System.Collections;
 
-namespace Iot.Device.MulticastDns.Entities
+namespace Iot.Device.DnsProtocol.Entities
 {
     /// <summary>
     /// The class whom represents a Multicast DNS message.

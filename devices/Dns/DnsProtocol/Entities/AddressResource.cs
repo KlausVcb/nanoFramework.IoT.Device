@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Net;
-using Iot.Device.MulticastDns.Enum;
+using Iot.Device.DnsProtocol.Enum;
 
-namespace Iot.Device.MulticastDns.Entities
+namespace Iot.Device.DnsProtocol.Entities
 {
     /// <summary>
     /// The base class for Address resources.
